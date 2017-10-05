@@ -1,0 +1,12 @@
+---
+redirect_services:
+  - comment: "DNS based redirect example - the AWS host will accept traffic on 443/tcp and forward to ip.example.com on port 8443"
+    dport: "443"
+    to_destination_address: "{{ lookup('dig', 'ip.example.com./A') }}"
+    to_destination_port: "8443"
+    proto: "tcp"
+  - comment: "IP based redirect example - the AWS host will accept traffic on 53/udp and forward to 192.168.10.1 on port 1194"
+    dport: "53"
+    to_destination_address: "192.168.10.1"
+    to_destination_port: "1194"
+    proto: "udp"

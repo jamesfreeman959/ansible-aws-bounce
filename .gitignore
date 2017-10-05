@@ -2,5 +2,6 @@ ec2.py
 ec2.ini
 group_vars/all/main.yml
 group_vars/all/secret.yml
+group_vars/tag_ansible_group_bounce_server/redirect.yml
 *.retry
 

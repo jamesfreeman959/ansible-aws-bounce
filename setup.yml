@@ -30,9 +30,28 @@
       iptables:
         table: nat
         chain: PREROUTING
-        protocol: tcp
-        destination_port: 443
+        protocol: "{{ item.proto }}"
+        destination_port: "{{ item.dport }}"
         jump: DNAT
-        to_destination: "{{ lookup('dig', 'ext.hm.hkskies.com./A') }}:1190"
-        comment: Ansible NAT redirect
-
+        to_destination: "{{ item.to_destination_address }}:{{ item.to_destination_port }}"
+        comment: "{{ item.comment }}"
+      with_items: "{{ redirect_services }}"
+    - name: Ensure SG is set up
+      local_action: 
+        module: ec2_group
+        name: "{{ ec2_security_group }}"
+        description: bounce EC2 group
+        vpc_id: "{{ ec2_vpc_id }}"
+        region: "{{ ec2_region }}"
+        aws_secret_key: "{{ ec2_secret_key }}"
+        aws_access_key: "{{ ec2_access_key }}"
+        rules:
+          - proto: "{{ item.proto }}"
+            from_port: "{{ item.dport }}"
+            to_port: "{{ item.dport }}"
+            cidr_ip: 0.0.0.0/0
+      with_items: 
+        - "{{ redirect_services }}"
+        - proto: tcp
+          dport: 22
+      become: false
