@@ -45,6 +45,7 @@
         region: "{{ ec2_region }}"
         aws_secret_key: "{{ ec2_secret_key }}"
         aws_access_key: "{{ ec2_access_key }}"
+        purge_rules: false
         rules:
           - proto: "{{ item.proto }}"
             from_port: "{{ item.dport }}"
