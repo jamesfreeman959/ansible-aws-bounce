@@ -1,0 +1,13 @@
+---
+ec2_access_key: AKIAJW54VSYWHBCUZKIA
+ec2_secret_key: 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
+ec2_region: eu-west-2
+ec2_zone: 
+ec2_image: ami-996372fd
+ec2_instance_type: t2.medium 
+ec2_keypair: jamesatqurueuw2
+ec2_security_group: bouncesg 
+ec2_instance_count: 1
+ec2_vpc_id: vpc-1ffdb976
+
+tower_user_name: james
