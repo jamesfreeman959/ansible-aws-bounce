@@ -1,0 +1,34 @@
+---
+#Provision some instances:
+
+- hosts: tag_ansible_group_bounce_server
+  connection: local
+
+  tasks:
+  - name: Gather EC2 facts
+    local_action: ec2_facts
+#  - debug: var=hostvars[inventory_hostname]
+  - debug: msg="{{ hostvars[inventory_hostname]['ec2_id'] }}"
+  - name: Terminate instances
+    local_action: ec2
+      state='absent'
+      instance_ids='{{ ec2_id }}'
+      region='{{ ec2_region }}'
+      aws_secret_key="{{ ec2_secret_key }}"
+      aws_access_key="{{ ec2_access_key }}"
+      wait=True
+
+- hosts: localhost
+  connection: local
+  gather_facts: False
+
+  tasks:
+  - name: Remove SG
+    ec2_group:
+      name: "{{ ec2_security_group }}"
+      description: bounce EC2 group
+      vpc_id: "{{ ec2_vpc_id }}"
+      region: "{{ ec2_region }}"
+      aws_secret_key: "{{ ec2_secret_key }}"
+      aws_access_key: "{{ ec2_access_key }}"
+      state: absent

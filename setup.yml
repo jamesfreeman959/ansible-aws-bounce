@@ -1,0 +1,38 @@
+---
+- hosts: tag_ansible_group_bounce_server
+  remote_user: ubuntu
+  become: true
+  gather_facts: false
+
+  pre_tasks:
+    - name: Install python for Ansible
+      raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+      register: output
+      changed_when: output.stdout != ""
+      tags: always 
+    # action: setup will gather facts after python2 has been installed
+    - action: setup
+
+  tasks:
+    - name: Enable IP forwarding
+      sysctl:
+        name: net.ipv4.ip_forward
+        value: 1
+        state: present
+        reload: True
+    - name: Create Iptables NAT chain
+      iptables:
+        table: nat
+        chain: POSTROUTING
+        jump: MASQUERADE
+        comment: Ansible NAT Masquerade
+    - name: Create Iptables redirection chain
+      iptables:
+        table: nat
+        chain: PREROUTING
+        protocol: tcp
+        destination_port: 443
+        jump: DNAT
+        to_destination: "{{ lookup('dig', 'ext.hm.hkskies.com./A') }}:1190"
+        comment: Ansible NAT redirect
+
