@@ -1,6 +1,6 @@
 ec2.py
 ec2.ini
-group_vars/all/all
+group_vars/all/main.yml
 group_vars/all/secret.yml
 *.retry
 
