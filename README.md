@@ -58,6 +58,12 @@ ansible-playbook --ask-vault-pass launch-instance.yml
 ansible-playbook -i ec2.py --ask-vault-pass --private-key <EC2 PEM file location> setup.yml
 ```
 
+If you don't want to have to accept the host key every time you run this (assuming you use these playbooks to frequently set up and tear down configurations as I do) then run the command like this to turn off host key checking:
+
+```
+ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ec2.py --ask-vault-pass --private-key <EC2 PEM file location> setup.ym
+```
+
 5. Enjoy!
 
 6. When no longer required, simply run this playbook to terminate the instances and cleanup the Security Group we created earlier:

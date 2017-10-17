@@ -4,7 +4,15 @@
   connection: local
   gather_facts: False
 
+  vars:
+    local_ec2_url: "{{ lookup('env','EC2_URL') }}"
+
   tasks:
+  - name: Check EC2_URL isn't set
+    debug:
+      msg: "EC2_URL is set - this may cause issues with this playbook - please unset it and relaunch"
+    when: local_ec2_url != ""
+    failed_when: local_ec2_url != ""
   - name: Ensure SG is set up
     ec2_group:
       name: "{{ ec2_security_group }}"
